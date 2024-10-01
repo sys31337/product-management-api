@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Product from '@models/product';
 import { ACTIVE, DELETED } from '@constants/status';
+import Category from '@models/category';
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,8 +37,9 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 export const softDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { params: { id } } = req;
-    const product = await Product.findByIdAndUpdate(id, { status: DELETED }, { new: true });
-    return res.status(200).send(product);
+    const product = await Product.findOneAndUpdate({ _id: id, status: ACTIVE }, { status: DELETED }, { new: true });
+    if (!product) return res.sendStatus(404);
+    return res.sendStatus(200);
   } catch (error) {
     return next(error);
   }
@@ -46,7 +48,8 @@ export const softDeleteProduct = async (req: Request, res: Response, next: NextF
 export const hardDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { params: { id } } = req;
-    await Product.deleteOne({ _id: id });
+    const deleteOne = await Product.findByIdAndDelete(id);
+    if (!deleteOne) return res.sendStatus(404);
     return res.sendStatus(200);
   } catch (error) {
     return next(error);
@@ -65,7 +68,7 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById({ $and: [{ id }, { status: ACTIVE }] });
+    const product = await Product.findById({ $and: [{ _id: id }, { status: ACTIVE }] });
     if (!product) return res.sendStatus(404);
     return res.status(200).send(product);
   } catch (error) {

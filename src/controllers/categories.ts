@@ -30,7 +30,7 @@ export const softDeleteCategory = async (req: Request, res: Response, next: Next
     const { params: { id } } = req;
     const category = await Category.findOneAndUpdate({ _id: id, status: ACTIVE }, { status: DELETED }, { new: true });
     if (!category) return res.sendStatus(404);
-    return res.status(200).send(category);
+    return res.sendStatus(200);
   } catch (error) {
     return next(error);
   }
@@ -59,7 +59,7 @@ export const getCategories = async (_req: Request, res: Response, next: NextFunc
 export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const category = await Category.findOne({ $and: [{ id }, { status: ACTIVE }] });
+    const category = await Category.findOne({ $and: [{ _id: id }, { status: ACTIVE }] });
     if (!category) return res.sendStatus(404);
     return res.status(200).send(category);
   } catch (error) {

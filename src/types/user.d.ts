@@ -1,10 +1,11 @@
 import { Request } from "express";
 
+export type Role = "ADMIN" | "MANAGER" | "CLIENT";
+
 export interface AuthRequest extends Request {
   userId?: string;
   email?: string;
-  isAdmin?: boolean;
-  role?: number;
+  role?: Role;
 }
 
 export interface User extends Document {

@@ -1,6 +1,5 @@
 import { Schema, model } from 'mongoose';
-
-const requiredString = { type: String, required: true };
+import { requiredString } from './common';
 
 const revokedTokensSchema = new Schema({
   token: requiredString,

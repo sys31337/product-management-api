@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose';
 import type { User } from '@type/user';
 import { ADMIN, CLIENT, MANAGER } from '@constants/users';
-
-const requiredString = { type: String, required: true };
+import { requiredString } from './common';
 
 const userSchema = new Schema<User>({
   fullname: String,

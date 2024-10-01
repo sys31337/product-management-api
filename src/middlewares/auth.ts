@@ -23,7 +23,7 @@ const auth = async (req: AuthRequest, res: Response, next: NextFunction): Promis
     if (!user) {
       res.sendStatus(404); return;
     }
-    req.isAdmin = user.role > 1;
+    req.role = user.role;
     return next();
   } catch (error) {
     return next(error);

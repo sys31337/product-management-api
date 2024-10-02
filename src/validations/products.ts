@@ -24,6 +24,15 @@ const idSchema = Joi.object({
   id: mongooseId.required(),
 });
 
+const getProductsSchema = Joi.object({
+  category: string.allow(''),
+  minPrice: number,
+  maxPrice: number,
+  page: number,
+  limit: number,
+});
+
 export const createValidator = validator.body(createSchema);
 export const updateValidator = validator.body(updateSchema);
 export const productIdValidator = validator.params(idSchema);
+export const getProductsValidator = validator.query(getProductsSchema);

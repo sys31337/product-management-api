@@ -17,7 +17,7 @@ with different levels of permissions for different user roles.
 		- Managers can create and update products and categories.
 		- Clients can only view products and categories.
 
-## Technologies utilisées
+## Used tools
 
 * [ExpressJs](https://expressjs.com/): Node JS Framework
 * [Mongoose](https://www.npmjs.com/package/mongoose): MongoDB object modeling tool

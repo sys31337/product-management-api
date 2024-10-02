@@ -12,7 +12,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const cookiesOptions = {
   httpOnly: true,
   secure: true,
-  maxAge: 24 * 60 * 60 * 1000
+  maxAge: 24 * 60 * 60 * 1000,
 };
 
 export const createAccount = async (req: Request, res: Response, next: NextFunction) => {
@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     res.cookie('jwt', refreshToken, cookiesOptions);
-    const { password: _p, __v, ...usr } = user
+    const { password: _p, __v, ...usr } = user;
     return res.status(200).send({ ...usr, accessToken });
   } catch (error) {
     return next(error);
@@ -49,10 +49,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.cookies?.jwt) return res.sendStatus(401);
-    const refreshToken = req.cookies.jwt;
-    const isRevoked = await RevokedTokens.findOne({ token: refreshToken });
+    const token = req.cookies.jwt;
+    const isRevoked = await RevokedTokens.findOne({ token });
     if (isRevoked) return res.sendStatus(401);
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET,
+    jwt.verify(
+      token,
+      process.env.REFRESH_TOKEN_SECRET,
       async (err: unknown, decoded) => {
         if (err) return res.sendStatus(401);
         const user = await User.findById(decoded.userId);
@@ -60,19 +62,21 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         const { _id: userId, fullname, email } = user;
         const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
         return res.status(200).send({ accessToken });
-      })
-  } catch (error) {
-    return next(error);
-  }
-}
-
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (!req.cookies?.jwt) return res.sendStatus(401);
-    const refreshToken = req.cookies.jwt;
-    await new RevokedTokens({ token: refreshToken }).save();
+      },
+    );
     return res.sendStatus(200);
   } catch (error) {
     return next(error);
   }
-}
+};
+
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.cookies?.jwt) return res.sendStatus(401);
+    const token = req.cookies.jwt;
+    await new RevokedTokens({ token }).save();
+    return res.sendStatus(200);
+  } catch (error) {
+    return next(error);
+  }
+};

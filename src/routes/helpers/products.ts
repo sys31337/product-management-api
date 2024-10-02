@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { create, getProducts, getProduct, hardDeleteProduct, softDeleteProduct, update } from '@controllers/products';
+import {
+  create, getProducts, getProduct, hardDeleteProduct, softDeleteProduct, update,
+} from '@controllers/products';
 import { productIdValidator, createValidator, updateValidator } from '@validations/products';
 import roleCheck from '@middlewares/roleCheck';
 import auth from '@middlewares/auth';
@@ -18,6 +20,6 @@ router.route('/:id')
   .put(auth, isManagerOrAdmin, productIdValidator, updateValidator, update)
   .delete(auth, isAdmin, productIdValidator, softDeleteProduct);
 
-router.delete('/:id/hard', auth, isAdmin, productIdValidator, hardDeleteProduct)
+router.delete('/:id/hard', auth, isAdmin, productIdValidator, hardDeleteProduct);
 
 export default router;

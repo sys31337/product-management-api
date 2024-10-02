@@ -7,5 +7,5 @@ export interface Product extends Document {
   price: number;
   quantity: number;
   category: Types.ObjectId | PopulatedDoc<Category>;
-  status: "ACTIVE" | "DELETED";
+  status: 'ACTIVE' | 'DELETED';
 }

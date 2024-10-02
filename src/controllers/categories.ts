@@ -11,7 +11,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,7 +23,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const softDeleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,7 +34,7 @@ export const softDeleteCategory = async (req: Request, res: Response, next: Next
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const hardDeleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,7 +45,7 @@ export const hardDeleteCategory = async (req: Request, res: Response, next: Next
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const getCategories = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,7 +54,7 @@ export const getCategories = async (_req: Request, res: Response, next: NextFunc
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const getCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -65,4 +65,4 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
   } catch (error) {
     return next(error);
   }
-}
+};

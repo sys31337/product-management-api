@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import type { Product } from '@type/product';
-import { requiredString } from './common';
 import { ACTIVE, statusEnum } from '@constants/status';
+import { requiredString } from './common';
 
 const productSchema = new Schema<Product>({
   name: requiredString,
@@ -16,7 +16,7 @@ const productSchema = new Schema<Product>({
     type: String,
     enum: statusEnum,
     default: ACTIVE,
-  }
+  },
 }, { timestamps: true });
 
 const Product = model<Product>('Product', productSchema);

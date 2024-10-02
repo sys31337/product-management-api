@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { createAccount, login, logout, refreshToken } from '@controllers/users';
+import {
+  createAccount, login, logout, refreshToken,
+} from '@controllers/users';
 import { loginValidator, registerValidator } from '@validations/users';
 
 const router = Router();

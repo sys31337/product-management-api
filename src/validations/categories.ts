@@ -16,8 +16,8 @@ const updateSchema = Joi.object({
 
 const idSchema = Joi.object({
   id: mongooseId.required(),
-})
+});
 
 export const createValidator = validator.body(createSchema);
 export const updateValidator = validator.body(updateSchema);
-export const categoryIdValidator = validator.params(idSchema)
+export const categoryIdValidator = validator.params(idSchema);

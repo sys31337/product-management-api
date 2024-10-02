@@ -1,6 +1,6 @@
-import { Request } from "express";
+import { Request } from 'express';
 
-export type Role = "ADMIN" | "MANAGER" | "CLIENT";
+export type Role = 'ADMIN' | 'MANAGER' | 'CLIENT';
 
 export interface AuthRequest extends Request {
   userId?: string;
@@ -15,7 +15,7 @@ export interface User extends Document {
   email: string;
   password: string;
   salt: string;
-  role: "CLIENT" | "MANAGER" | "ADMIN";
+  role: 'CLIENT' | 'MANAGER' | 'ADMIN';
   resetPasswordUid: string;
   resetPasswordExpiresAt: Date;
   __v: number;

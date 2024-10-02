@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { create, getCategories, getCategory, hardDeleteCategory, softDeleteCategory, update } from '@controllers/categories';
+import {
+  create, getCategories, getCategory, hardDeleteCategory, softDeleteCategory, update,
+} from '@controllers/categories';
 import { categoryIdValidator, createValidator, updateValidator } from '@validations/categories';
 import roleCheck from '@middlewares/roleCheck';
 import auth from '@middlewares/auth';
@@ -18,6 +20,6 @@ router.route('/:id')
   .put(auth, isManagerOrAdmin, categoryIdValidator, updateValidator, update)
   .delete(auth, isAdmin, categoryIdValidator, softDeleteCategory);
 
-router.delete('/:id/hard', auth, isAdmin, categoryIdValidator, hardDeleteCategory)
+router.delete('/:id/hard', auth, isAdmin, categoryIdValidator, hardDeleteCategory);
 
 export default router;

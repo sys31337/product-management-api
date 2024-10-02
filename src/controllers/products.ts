@@ -1,30 +1,35 @@
 import { Request, Response, NextFunction } from 'express';
 import Product from '@models/product';
 import { ACTIVE, DELETED } from '@constants/status';
-import Category from '@models/category';
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
-      name, description, price, quantity, category
+      name, description, price, quantity, category,
     } = req.body;
-    const payload = { name, description, price, quantity, category };
+    const payload = {
+      name, description, price, quantity, category,
+    };
     const product = await new Product(payload).save();
     return res.status(200).send(product);
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { params: { id }, body: { name, description, price, quantity, category } } = req;
+    const {
+      params: { id }, body: {
+        name, description, price, quantity, category,
+      },
+    } = req;
     const payload = {
       ...(name && { name }),
       ...(description && { description }),
       ...(price && { price }),
       ...(quantity && { quantity }),
-      ...(category && { category })
+      ...(category && { category }),
     };
     const product = await Product.findByIdAndUpdate(id, payload, { new: true });
     if (!product) return res.sendStatus(404);
@@ -32,7 +37,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const softDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -43,7 +48,7 @@ export const softDeleteProduct = async (req: Request, res: Response, next: NextF
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const hardDeleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -54,7 +59,7 @@ export const hardDeleteProduct = async (req: Request, res: Response, next: NextF
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const getProducts = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,7 +68,7 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
   } catch (error) {
     return next(error);
   }
-}
+};
 
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -74,4 +79,4 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
   } catch (error) {
     return next(error);
   }
-}
+};

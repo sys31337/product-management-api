@@ -4,7 +4,11 @@ import type { IError } from '../types/utils';
 
 const notFound = (req: Request, res: Response, next: NextFunction): void => {
   const error = new Error(`NOT FOUND - ${req.originalUrl}`);
-  req.originalUrl === '/' ? res.status(404) : res.status(401);
+  if (req.originalUrl === '/') {
+    res.status(404);
+  } else {
+    res.status(401);
+  }
   next(error);
 };
 

@@ -12,8 +12,10 @@ const productPayload = {
 const productObject = {
   _id: expect.anything(),
   name: expect.any(String),
-  description: expect.any(String),
+  category: expect.any(String),
   status: expect.any(String),
+  quantity: expect.any(Number),
+  price: expect.any(Number),
 };
 
 let randomProductId = null;
@@ -49,7 +51,12 @@ describe('Products Test', () => {
   it('Gets all products', () => request(app)
     .get('/api/v1/products')
     .expect(200)
-    .then((res) => expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining(productObject)]))));
+    .then((res) => expect(res.body).toEqual(expect.objectContaining({
+      count: expect.any(Number),
+      currentPage: expect.any(Number),
+      totalPages: expect.any(Number),
+      products: expect.arrayContaining([expect.objectContaining(productObject)]),
+    }))));
 
   it('Gets a single product', () => request(app)
     .get(`/api/v1/products/${randomProductId}`)
@@ -61,11 +68,11 @@ describe('Products Test', () => {
     .send({ name: 'Updated product name', description: 'Updated product description' })
     .expect(200));
 
-  // it('Softly deletes single product', () => request(app)
-  //   .delete(`/api/v1/products/${randomProductId}`)
-  //   .expect(200));
+  it('Softly deletes single product', () => request(app)
+    .delete(`/api/v1/products/${randomProductId}`)
+    .expect(200));
 
-  // it('Hardly deletes single product', () => request(app)
-  //   .delete(`/api/v1/products/${randomProductId}/hard`)
-  //   .expect(200));
+  it('Hardly deletes single product', () => request(app)
+    .delete(`/api/v1/products/${randomProductId}/hard`)
+    .expect(200));
 });

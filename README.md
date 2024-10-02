@@ -46,10 +46,15 @@ with different levels of permissions for different user roles.
 
 ## Environment file
 `PORT`: The port where the server will serve
+
 `DATABASEURI`: The Database connection string
+
 `CORS_FRONTEND_DOMAINS`: List of cors to allow
+
 `ACCESS_TOKEN_SECRET`: A token to sign `accessTokens` with
+
 `REFRESH_TOKEN_SECRET`: A token to sign `refreshTokens` with, should be different and unique
+
 
 ## Scripts
 

@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).send({ message: WRONG_PASSWORD });
     const { _id: userId, fullname } = user;
-    const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
     const refreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     res.cookie('jwt', refreshToken, cookiesOptions);
     const { password: _p, __v, ...usr } = user;
@@ -46,13 +46,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
     if (!req.cookies?.jwt) return res.sendStatus(401);
     const token = req.cookies.jwt;
     const isRevoked = await RevokedTokens.findOne({ token });
     if (isRevoked) return res.sendStatus(401);
-    jwt.verify(
+    return jwt.verify(
       token,
       process.env.REFRESH_TOKEN_SECRET,
       async (err: unknown, decoded) => {
@@ -64,7 +64,6 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         return res.status(200).send({ accessToken });
       },
     );
-    return res.sendStatus(200);
   } catch (error) {
     return next(error);
   }

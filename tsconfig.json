@@ -42,8 +42,8 @@
       "@validations/*": ["./src/validations/*"],
       "@config/*": ["./src/config/*"],
       "@routes": ["./src/routes/index.ts"],
-      "@app": ["./src/app.ts"],
-    },
+      "@app": ["./src/app.ts"]
+    }
   },
   "include": ["*.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["dist", "build", "node_modules"]

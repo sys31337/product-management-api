@@ -73,7 +73,7 @@ export const getProducts = async (_req: Request, res: Response, next: NextFuncti
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById({ $and: [{ _id: id }, { status: ACTIVE }] });
+    const product = await Product.findOne({ $and: [{ _id: id }, { status: ACTIVE }] });
     if (!product) return res.sendStatus(404);
     return res.status(200).send(product);
   } catch (error) {

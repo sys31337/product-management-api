@@ -61,10 +61,29 @@ export const hardDeleteProduct = async (req: Request, res: Response, next: NextF
   }
 };
 
-export const getProducts = async (_req: Request, res: Response, next: NextFunction) => {
+export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const products = await Product.find();
-    return res.status(200).send(products);
+    const {
+      category, minPrice, maxPrice, page = 1, limit = 3,
+    } = req.query;
+
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
+    const filter = {
+      ...(!!category && { category }),
+      ...(!!minPrice && { price: { $gte: minPrice } }),
+      ...(!!maxPrice && { price: { $lte: maxPrice } }),
+    };
+
+    const count = await Product.countDocuments(filter);
+    const products = await Product.find(filter).skip(skip).limit(limitNum);
+    return res.status(200).send({
+      products,
+      totalPages: Math.ceil(count / limitNum),
+      currentPage: pageNum,
+      count,
+    });
   } catch (error) {
     return next(error);
   }

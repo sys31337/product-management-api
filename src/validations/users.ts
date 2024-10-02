@@ -6,12 +6,12 @@ const validator = expressJoiValidation.createValidator({ passError: true });
 
 const loginSchema = Joi.object({
   email: string.required(),
-  password: string.required().min(3).max(32),
+  password: string.required().min(6).max(32),
 });
 
 const registerSchema = Joi.object({
   email: string.required(),
-  password: string.required().min(3).max(32),
+  password: string.required().min(6).max(32),
   confirm: string.required().valid(Joi.ref('password')),
 });
 

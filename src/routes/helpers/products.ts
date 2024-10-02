@@ -2,7 +2,9 @@ import { Router } from 'express';
 import {
   create, getProducts, getProduct, hardDeleteProduct, softDeleteProduct, update,
 } from '@controllers/products';
-import { productIdValidator, createValidator, updateValidator } from '@validations/products';
+import {
+  productIdValidator, createValidator, updateValidator, getProductsValidator,
+} from '@validations/products';
 import roleCheck from '@middlewares/roleCheck';
 import auth from '@middlewares/auth';
 
@@ -12,7 +14,7 @@ const isManagerOrAdmin = roleCheck(['ADMIN', 'MANAGER']);
 const isAdmin = roleCheck(['ADMIN']);
 
 router.route('/')
-  .get(auth, getProducts)
+  .get(auth, getProductsValidator, getProducts)
   .post(auth, isManagerOrAdmin, createValidator, create);
 
 router.route('/:id')

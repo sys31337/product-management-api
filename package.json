@@ -1,7 +1,7 @@
 {
   "name": "product-management-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.ts",
   "repository": "https://github.com/sys31337/product-management-api.git",
   "author": "sys31337 <paytf@outlook.com>",
   "license": "MIT",

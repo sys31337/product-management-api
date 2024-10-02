@@ -6,6 +6,7 @@ export interface AuthRequest extends Request {
   userId?: string;
   email?: string;
   role?: Role;
+  isTest?: boolean;
 }
 
 export interface User extends Document {

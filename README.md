@@ -27,9 +27,7 @@ with different levels of permissions for different user roles.
 * [Jest](https://www.npmjs.com/package/jest) & [Supertest](https://www.npmjs.com/package/supertest): Testing utility to test units.
 
 ## Requirements
-
 * NodeJs >= 18
-* Yarn
 
 ## Installation
 

@@ -54,16 +54,17 @@ const onListening = (): void => {
     ? `Pipe ${addr}`
     : `Port ${PORT}`;
   log(`Listening on ${bind}`);
-  db.once('open', () => {
-    log('Database Connected');
-  });
-
-  db.on('error', (error: Error) => {
-    logError('Database Connection error:', error);
-  });
 };
 
-server.listen(PORT);
+db.once('open', () => {
+  server.listen(PORT);
+  log('Database Connected');
+});
+
+db.on('error', (error: Error) => {
+  logError('Database Connection error:', error);
+});
+
 server.on('error', onError);
 server.on('listening', onListening);
 

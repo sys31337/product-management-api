@@ -40,6 +40,7 @@ with different levels of permissions for different user roles.
    yarn
    ```
 3. Copy `.env.example` to `.env`
+4. Set the variables accordingly
 
 ## Environment file
 `PORT`: The port where the server will serve

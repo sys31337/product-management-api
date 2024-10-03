@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).send({ message: WRONG_PASSWORD });
     const { _id: userId, fullname } = user;
-    const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+    const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     res.cookie('jwt', refreshToken, cookiesOptions);
     const { password: _p, __v, ...usr } = user;

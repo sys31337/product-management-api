@@ -9,20 +9,16 @@ import RevokedTokens from '@models/tokens';
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
-const cookiesOptions = {
-  httpOnly: true,
-  secure: true,
-  maxAge: 24 * 60 * 60 * 1000,
-};
-
 export const createAccount = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password: rawPassword } = req.body;
+    const { email, password: rawPassword, fullname } = req.body;
     const salt = await bcrypt.genSalt();
     const password = await bcrypt.hash(rawPassword, salt);
-    const userPayload = { email, password, salt };
-    const user = await new User(userPayload).save();
-    return res.status(200).send(user);
+    const userPayload = {
+      email, password, salt, fullname,
+    };
+    await new User(userPayload).save();
+    return res.status(200).send({ email, fullname });
   } catch (error) {
     return next(error);
   }
@@ -38,9 +34,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const { _id: userId, fullname } = user;
     const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-    res.cookie('jwt', refreshToken, cookiesOptions);
     const { password: _p, __v, ...usr } = user;
-    return res.status(200).send({ ...usr, accessToken });
+    return res.status(200).send({ ...usr, accessToken, refreshToken });
   } catch (error) {
     return next(error);
   }
@@ -48,20 +43,24 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
   try {
-    if (!req.cookies?.jwt) return res.sendStatus(401);
-    const token = req.cookies.jwt;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Refresh ')) return res.sendStatus(401);
+    const token = authHeader.split(' ')[1];
+    if (!token) return res.sendStatus(401);
     const isRevoked = await RevokedTokens.findOne({ token });
     if (isRevoked) return res.sendStatus(401);
     return jwt.verify(
       token,
       process.env.REFRESH_TOKEN_SECRET,
-      async (err: unknown, decoded) => {
+      async (err: unknown, dec) => {
         if (err) return res.sendStatus(401);
-        const user = await User.findById(decoded.userId);
+        const decoded = dec as jwt.JwtPayload;
+        const user = await User.findById(decoded?.userId);
         if (!user) return res.sendStatus(401);
         const { _id: userId, fullname, email } = user;
         const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        return res.status(200).send({ accessToken });
+        const newRefreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+        return res.status(200).send({ accessToken, refreshToken: newRefreshToken });
       },
     );
   } catch (error) {

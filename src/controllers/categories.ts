@@ -47,10 +47,23 @@ export const hardDeleteCategory = async (req: Request, res: Response, next: Next
   }
 };
 
-export const getCategories = async (_req: Request, res: Response, next: NextFunction) => {
+export const getCategories = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const categories = await Category.find();
-    return res.status(200).send(categories);
+    const { page = 1, limit = 10 } = req.query;
+
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const skip = (pageNum - 1) * limitNum;
+    const filter = { status: ACTIVE };
+
+    const count = await Category.countDocuments(filter);
+    const categories = await Category.find(filter).skip(skip).limit(limitNum);
+    return res.status(200).send({
+      categories,
+      totalPages: Math.ceil(count / limitNum),
+      currentPage: pageNum,
+      count,
+    });
   } catch (error) {
     return next(error);
   }

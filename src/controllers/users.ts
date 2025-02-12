@@ -31,9 +31,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     if (!user) return res.sendStatus(404);
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).send({ message: WRONG_PASSWORD });
-    const { _id: userId, fullname } = user;
-    const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+    const { _id: userId, fullname, role } = user;
+    const accessToken = jwt.sign({
+      userId, fullname, email, role,
+    }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({
+      userId, fullname, email, role,
+    }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
     const { password: _p, __v, ...usr } = user;
     return res.status(200).send({ ...usr, accessToken, refreshToken });
   } catch (error) {
@@ -57,10 +61,14 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
         const decoded = dec as jwt.JwtPayload;
         const user = await User.findById(decoded?.userId);
         if (!user) return res.sendStatus(401);
-        const { _id: userId, fullname, email } = user;
+        const {
+          _id: userId, fullname, email, role,
+        } = user;
         const accessToken = jwt.sign({ userId, fullname, email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
         const newRefreshToken = jwt.sign({ userId, fullname, email }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-        return res.status(200).send({ accessToken, refreshToken: newRefreshToken });
+        return res.status(200).send({
+          accessToken, refreshToken: newRefreshToken, email, role,
+        });
       },
     );
   } catch (error) {
